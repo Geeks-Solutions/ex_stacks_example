@@ -29,6 +29,56 @@ There are 3 ways in how you can take advantage of the Ex Stacks library:
     - The first parameter in the request function is the named request that you would like to call, you can find the full list of available names in the ExStacks library.
     - The second is the parameters map that will be used in the request, some of these are required and will return an error if not present, others are optional.
 
+##### Signing a transaxtion
+- To sign a transaction, you'll need to include the signature of the wallet signing the transaction, and the raw transaction, as well as specifying the network identifier.
+Example: 
+```elixir
+ StacksAPI.request(
+      "sign_transaction",
+      %{
+        network_identifier: %{
+          blockchain: "stacks",
+          network: "mainnet"
+        },
+        unsigned_transaction:
+          "00000000010400539886f96611ba3ba6cef9618f8c78118b37c5be0000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003020000000000051ab71a091b4b8b7661a661c620966ab6573bc2dcd3000000000007a12074657374207472616e73616374696f6e000000000000000000000000000000000000",
+        signatures: [
+          %{
+            signing_payload: %{
+              address: "string",
+              account_identifier: %{
+                address: "STB44HYPYAT2BB2QE513NSP81HTMYWBJP02HPGK6",
+                metadata: %{}
+              },
+              hex_bytes: "string",
+              signature_type: "ecdsa"
+            },
+            public_key: %{
+              hex_bytes: "025c13b2fc2261956d8a4ad07d481b1a3b2cbf93a24f992249a61c3a1c4de79c51",
+              curve_type: "secp256k1"
+            },
+            signature_type: "ecdsa",
+            hex_bytes: "string"
+          }
+        ]
+      }
+    )
+```
+
+##### Submitting a signed transaction
+- To submit a signed transaction, all you need to do is include the signed transaction (you can retrieve it by using the previous signing a transaction function) and the network identifier
+Example:
+```elixir
+ StacksAPI.request("submit_signed_transaction", %{
+      network_identifier: %{
+        blockchain: "stacks",
+        network: "mainnet"
+      },
+      signed_transaction:
+        "0x80800000000400539886f96611ba3ba6cef9618f8c78118b37c5be000000000000000000000000000000b400017a33a91515ef48608a99c6adecd2eb258e11534a1acf66348f5678c8e2c8f83d243555ed67a0019d3500df98563ca31321c1a675b43ef79f146e322fe08df75103020000000000051a1ae3f911d8f1d46d7416bfbe4b593fd41eac19cb000000000007a12000000000000000000000000000000000000000000000000000000000000000000000"
+    })
+```
+
 ### Subscribing to events
 - These are websocket events that you can watch and wait for messages coming through the websocket.
 - ``node_ws_url`` is required to make use of this feature.
